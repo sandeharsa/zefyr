@@ -88,6 +88,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.highlight.key: NotusAttribute.highlight,
     NotusAttribute.direction.key: NotusAttribute.direction,
     NotusAttribute.alignment.key: NotusAttribute.alignment,
+    NotusAttribute.indent(0).key: NotusAttribute.indent(0),
   };
 
   // Inline attributes
@@ -144,6 +145,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Alias for [NotusAttribute.block.checkList].
   static NotusAttribute<String> get cl => block.checkList;
+
+  /// Indent style attribute. Used for [Notus.block.bulletList] and [Notus.block.numberList]
+  static NotusAttribute<int> indent(int level) => _IndentAttribute(level);
 
   /// Alias for [NotusAttribute.block.quote].
   static NotusAttribute<String> get bq => block.quote;
@@ -386,6 +390,11 @@ class _HighlightAttribute extends NotusAttribute<bool> {
 class _StrikethroughAttribute extends NotusAttribute<bool> {
   const _StrikethroughAttribute()
       : super._('s', NotusAttributeScope.inline, true);
+}
+
+class _IndentAttribute extends NotusAttribute<int> {
+  const _IndentAttribute(int level)
+      : super._('in', NotusAttributeScope.line, level);
 }
 
 /// Applies code style to a text segment.
