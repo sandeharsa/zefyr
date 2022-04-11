@@ -38,9 +38,9 @@ class NotusChange {
 /// A rich text document.
 class NotusDocument {
   /// Creates new empty Notus document.
-  NotusDocument()
-      : _heuristics = NotusHeuristics.fallback,
-        _delta = Delta()..insert('\n') {
+  NotusDocument({NotusHeuristics? heuristics, Delta? delta})
+      : _heuristics = heuristics ?? NotusHeuristics.fallback,
+        _delta = delta ?? (Delta()..insert('\n')) {
     _loadDocument(_delta);
   }
 
