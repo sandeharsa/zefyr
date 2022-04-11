@@ -85,6 +85,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.checked.key: NotusAttribute.checked,
     NotusAttribute.block.key: NotusAttribute.block,
+    NotusAttribute.highlight.key: NotusAttribute.highlight,
     NotusAttribute.direction.key: NotusAttribute.direction,
     NotusAttribute.alignment.key: NotusAttribute.alignment,
   };
@@ -109,6 +110,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Link style attribute.
   // ignore: const_eval_throws_exception
   static const link = LinkAttributeBuilder._();
+
+  /// Highlight style attribute.
+  static const highlight = _HighlightAttribute();
 
   // Line attributes
 
@@ -152,6 +156,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Alias for [NotusAttribute.direction.rtl].
   static NotusAttribute<String> get rtl => direction.rtl;
+
   /// Alignment attribute
   static const alignment = AlignmentAttributeBuilder._();
 
@@ -370,6 +375,11 @@ class _ItalicAttribute extends NotusAttribute<bool> {
 /// Applies underline style to a text segment.
 class _UnderlineAttribute extends NotusAttribute<bool> {
   const _UnderlineAttribute() : super._('u', NotusAttributeScope.inline, true);
+}
+
+/// Applies highlight style to a text segment.
+class _HighlightAttribute extends NotusAttribute<bool> {
+  const _HighlightAttribute() : super._('hi', NotusAttributeScope.inline, true);
 }
 
 /// Applies strikethrough style to a text segment.
