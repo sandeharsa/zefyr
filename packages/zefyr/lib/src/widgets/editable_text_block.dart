@@ -102,12 +102,13 @@ class EditableTextBlock extends StatelessWidget {
         count: count,
         style: theme.paragraph.style,
         width: 32.0,
-        padding: 8.0,
+        padding: 0.0,
       );
     } else if (block == NotusAttribute.block.bulletList) {
       return _BulletPoint(
         style: theme.paragraph.style.copyWith(fontWeight: FontWeight.bold),
         width: 32,
+        padding: 2.0,
       );
     } else if (block == NotusAttribute.block.code) {
       return _NumberPoint(
@@ -138,7 +139,7 @@ class EditableTextBlock extends StatelessWidget {
     } else if (block == NotusAttribute.block.code) {
       return 32.0;
     } else {
-      return 32.0;
+      return 28.0;
     }
   }
 
@@ -268,9 +269,9 @@ class _NumberPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: AlignmentDirectional.topEnd,
+      alignment: AlignmentDirectional.topStart,
       width: width,
-      padding: EdgeInsetsDirectional.only(end: padding),
+      padding: EdgeInsetsDirectional.only(start: padding),
       child: Text(withDot ? '$index.' : '$index', style: style),
     );
   }
@@ -279,19 +280,21 @@ class _NumberPoint extends StatelessWidget {
 class _BulletPoint extends StatelessWidget {
   final double width;
   final TextStyle style;
+  final double padding;
 
   const _BulletPoint({
     Key? key,
     required this.width,
     required this.style,
+    this.padding = 0.0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: AlignmentDirectional.topEnd,
+      alignment: AlignmentDirectional.topStart,
       width: width,
-      padding: const EdgeInsetsDirectional.only(end: 13.0),
+      padding: EdgeInsetsDirectional.only(start: padding),
       child: Text('•', style: style),
     );
   }
