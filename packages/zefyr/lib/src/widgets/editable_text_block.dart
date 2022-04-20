@@ -65,13 +65,14 @@ class EditableTextBlock extends StatelessWidget {
     for (final line in node.children) {
       index++;
       final nodeTextDirection = getDirectionOfNode(line as LineNode);
+      final listIndent = _getListIndent(line);
       children.add(Directionality(
         textDirection: nodeTextDirection,
         child: EditableTextLine(
           node: line,
           spacing: _getSpacingForLine(line, index, count, theme),
-          leading: _buildLeading(context, line, index, count),
-          indentWidth: _getIndentWidth(),
+          leading: _buildLeading(context, line, index, count, listIndent),
+          indentWidth: _getIndentWidth() + listIndent,
           devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
           body: TextLine(
             node: line,
@@ -92,8 +93,8 @@ class EditableTextBlock extends StatelessWidget {
     return children.toList(growable: false);
   }
 
-  Widget? _buildLeading(
-      BuildContext context, LineNode node, int index, int count) {
+  Widget? _buildLeading(BuildContext context, LineNode node, int index,
+      int count, double listIndent) {
     final theme = ZefyrTheme.of(context)!;
     final block = node.style.get(NotusAttribute.block);
     if (block == NotusAttribute.block.numberList) {
@@ -102,7 +103,7 @@ class EditableTextBlock extends StatelessWidget {
         count: count,
         style: theme.paragraph.style,
         width: 32.0,
-        padding: 0.0,
+        padding: listIndent,
       );
     } else if (block == NotusAttribute.block.bulletList) {
       return _BulletPoint(
@@ -143,6 +144,18 @@ class EditableTextBlock extends StatelessWidget {
     }
   }
 
+  double _getListIndent(LineNode line) {
+    final block = node.style.get(NotusAttribute.block);
+    int indent = (line.style.get(NotusAttribute.indent(0))?.value as int?) ?? 0;
+    if (block == NotusAttribute.block.numberList ||
+        block == NotusAttribute.block.bulletList ||
+        block == NotusAttribute.block.checkList) {
+      return indent * _getIndentWidth();
+    }
+
+    return 0;
+  }
+
   VerticalSpacing _getSpacingForLine(
       LineNode node, int index, int count, ZefyrThemeData theme) {
     final heading = node.style.get(NotusAttribute.heading);
@@ -165,7 +178,8 @@ class EditableTextBlock extends StatelessWidget {
       if (block == NotusAttribute.block.quote) {
         lineSpacing = theme.quote.lineSpacing;
       } else if (block == NotusAttribute.block.numberList ||
-          block == NotusAttribute.block.bulletList) {
+          block == NotusAttribute.block.bulletList ||
+          block == NotusAttribute.block.checkList) {
         lineSpacing = theme.lists.lineSpacing;
       } else if (block == NotusAttribute.block.code ||
           block == NotusAttribute.block.code) {
