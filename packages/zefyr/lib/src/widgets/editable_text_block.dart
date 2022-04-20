@@ -65,13 +65,21 @@ class EditableTextBlock extends StatelessWidget {
     for (final line in node.children) {
       index++;
       final nodeTextDirection = getDirectionOfNode(line as LineNode);
-      final listIndent = _getListIndent(line);
+      final listDepth = _getListDepth(line);
+      final listIndent = listDepth.toDouble() * _getIndentWidth();
       children.add(Directionality(
         textDirection: nodeTextDirection,
         child: EditableTextLine(
           node: line,
           spacing: _getSpacingForLine(line, index, count, theme),
-          leading: _buildLeading(context, line, index, count, listIndent),
+          leading: _buildLeading(
+            context,
+            line,
+            index,
+            count,
+            listIndent,
+            listDepth,
+          ),
           indentWidth: _getIndentWidth() + listIndent,
           devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
           body: TextLine(
@@ -94,13 +102,14 @@ class EditableTextBlock extends StatelessWidget {
   }
 
   Widget? _buildLeading(BuildContext context, LineNode node, int index,
-      int count, double listIndent) {
+      int count, double listIndent, int listDepth) {
     final theme = ZefyrTheme.of(context)!;
     final block = node.style.get(NotusAttribute.block);
     if (block == NotusAttribute.block.numberList) {
       return _NumberPoint(
         index: index,
         count: count,
+        depth: listDepth,
         style: theme.paragraph.style,
         width: 32.0,
         padding: listIndent,
@@ -115,6 +124,7 @@ class EditableTextBlock extends StatelessWidget {
       return _NumberPoint(
         index: index,
         count: count,
+        depth: 0,
         style: theme.code.style
             .copyWith(color: theme.code.style.color?.withOpacity(0.4)),
         width: 32.0,
@@ -144,13 +154,13 @@ class EditableTextBlock extends StatelessWidget {
     }
   }
 
-  double _getListIndent(LineNode line) {
+  int _getListDepth(LineNode line) {
     final block = node.style.get(NotusAttribute.block);
-    int indent = (line.style.get(NotusAttribute.indent(0))?.value as int?) ?? 0;
     if (block == NotusAttribute.block.numberList ||
         block == NotusAttribute.block.bulletList ||
         block == NotusAttribute.block.checkList) {
-      return indent * _getIndentWidth();
+      return (line.style.get(NotusAttribute.indent(0))?.value as int?) ?? 0;
+      ;
     }
 
     return 0;
@@ -265,6 +275,7 @@ class _EditableBlock extends MultiChildRenderObjectWidget {
 class _NumberPoint extends StatelessWidget {
   final int index;
   final int count;
+  final int depth;
   final double width;
   final bool withDot;
   final double padding;
@@ -274,6 +285,7 @@ class _NumberPoint extends StatelessWidget {
     Key? key,
     required this.index,
     required this.count,
+    required this.depth,
     required this.width,
     required this.style,
     this.withDot = true,
@@ -282,14 +294,124 @@ class _NumberPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = _getText();
     return Container(
       alignment: AlignmentDirectional.topStart,
       width: width,
       padding: EdgeInsetsDirectional.only(start: padding),
-      child: Text(withDot ? '$index.' : '$index', style: style),
+      child: Text(withDot ? '$text.' : '$text', style: style),
     );
   }
+
+  String _getText() {
+    switch (depth) {
+      case 0:
+        return '$index';
+      case 1:
+        // Use modulo to cycle around the alphabets,
+        // avoiding index out of bounds error.
+        final indexOfValue = (index - 1) % (_alphabets.length - 1);
+        return _alphabets[indexOfValue];
+      case 2:
+        // Use modulo to cycle around the alphabets,
+        // avoiding index out of bounds error.
+        final indexOfValue = (index - 1) % (_romanNumerals.length - 1);
+        return _romanNumerals[indexOfValue];
+      default:
+        return '$index';
+    }
+  }
 }
+
+// Constants for numbered list
+
+const _alphabets = [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "q",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "w",
+  "x",
+  "y",
+  "z",
+  "aa",
+  "ab",
+  "ac",
+  "ad",
+  "ae",
+  "af",
+  "ag",
+  "ah",
+  "ai",
+  "aj",
+  "ak",
+  "al",
+  "am",
+  "an",
+  "ao",
+  "ap",
+  "aq",
+  "ar",
+  "as",
+  "at",
+  "au",
+  "av",
+  "aw",
+  "ax",
+  "ay",
+  "az",
+];
+
+const _romanNumerals = [
+  "i",
+  "ii",
+  "iii",
+  "iv",
+  "v",
+  "vi",
+  "vii",
+  "viii",
+  "ix",
+  "x",
+  "xi",
+  "xii",
+  "xiii",
+  "xiv",
+  "xv",
+  "xvi",
+  "xvii",
+  "xviii",
+  "xix",
+  "xx",
+  "xxi",
+  "xxii",
+  "xxiii",
+  "xxiv",
+  "xxv",
+  "xxvi",
+  "xxvii",
+  "xxviii",
+  "xxix",
+  "xxx"
+];
 
 class _BulletPoint extends StatelessWidget {
   final double width;
