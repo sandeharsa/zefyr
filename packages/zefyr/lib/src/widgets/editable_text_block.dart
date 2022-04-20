@@ -62,11 +62,36 @@ class EditableTextBlock extends StatelessWidget {
     final count = node.children.length;
     final children = <Widget>[];
     var index = 0;
+
+    // Values that are only relevant for lists.
+    // Map of depth to index number
+    Map<int, int> listsIndices = {};
+    int previousDepth = 0;
+
     for (final line in node.children) {
       index++;
       final nodeTextDirection = getDirectionOfNode(line as LineNode);
       final listDepth = _getListDepth(line);
       final listIndent = listDepth.toDouble() * _getIndentWidth();
+
+      // Keeping track of lists values.
+      // Reset the index if the indent level increased,
+      // e.g.
+      // 1.
+      //   a.
+      //   b.
+      // 2.
+      //   a. <--- reset back to 'a.' here, instead of continuing to 'c.'
+      if (listsIndices[listDepth] == null ||
+          (listDepth != 0 && previousDepth < listDepth)) {
+        listsIndices[listDepth] = 1;
+      } else {
+        listsIndices[listDepth] = listsIndices[listDepth]! + 1;
+      }
+      previousDepth = listDepth;
+
+      final listsIndex = listsIndices[listDepth] ?? index;
+
       children.add(Directionality(
         textDirection: nodeTextDirection,
         child: EditableTextLine(
@@ -75,7 +100,7 @@ class EditableTextBlock extends StatelessWidget {
           leading: _buildLeading(
             context,
             line,
-            index,
+            listsIndex,
             count,
             listIndent,
             listDepth,
@@ -108,7 +133,6 @@ class EditableTextBlock extends StatelessWidget {
     if (block == NotusAttribute.block.numberList) {
       return _NumberPoint(
         index: index,
-        count: count,
         depth: listDepth,
         style: theme.paragraph.style,
         width: 32.0,
@@ -123,7 +147,6 @@ class EditableTextBlock extends StatelessWidget {
     } else if (block == NotusAttribute.block.code) {
       return _NumberPoint(
         index: index,
-        count: count,
         depth: 0,
         style: theme.code.style
             .copyWith(color: theme.code.style.color?.withOpacity(0.4)),
@@ -274,7 +297,6 @@ class _EditableBlock extends MultiChildRenderObjectWidget {
 
 class _NumberPoint extends StatelessWidget {
   final int index;
-  final int count;
   final int depth;
   final double width;
   final bool withDot;
@@ -284,7 +306,6 @@ class _NumberPoint extends StatelessWidget {
   const _NumberPoint({
     Key? key,
     required this.index,
-    required this.count,
     required this.depth,
     required this.width,
     required this.style,
@@ -304,12 +325,15 @@ class _NumberPoint extends StatelessWidget {
   }
 
   String _getText() {
-    switch (depth) {
+    final remainder = depth % 3;
+
+    switch (remainder) {
       case 0:
         return '$index';
       case 1:
         // Use modulo to cycle around the alphabets,
         // avoiding index out of bounds error.
+
         final indexOfValue = (index - 1) % (_alphabets.length - 1);
         return _alphabets[indexOfValue];
       case 2:
