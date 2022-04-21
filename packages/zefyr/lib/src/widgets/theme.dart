@@ -202,6 +202,7 @@ class ZefyrThemeData {
         style: baseStyle,
         spacing: baseSpacing,
         lineSpacing: const VerticalSpacing(bottom: 0),
+        indentWidth: 28.0,
       ),
       quote: TextBlockTheme(
         style: TextStyle(color: baseStyle.color?.withOpacity(0.6)),
@@ -212,6 +213,7 @@ class ZefyrThemeData {
             start: BorderSide(width: 4, color: Colors.grey.shade300),
           ),
         ),
+        indentWidth: 16.0,
       ),
       code: TextBlockTheme(
         style: TextStyle(
@@ -225,6 +227,8 @@ class ZefyrThemeData {
           color: Colors.grey.shade50,
           borderRadius: BorderRadius.circular(2),
         ),
+        contentPadding: EdgeInsets.all(16),
+        indentWidth: 32.0,
       ),
     );
   }
@@ -290,8 +294,35 @@ class TextBlockTheme {
   final VerticalSpacing spacing;
 
   /// Vertical spacing for individual lines within a text block.
-  ///
   final VerticalSpacing lineSpacing;
+
+  /// Padding around the text, exclusive of spacing and line spacing
+  final EdgeInsets? contentPadding;
+
+  /// Defines whether the leading item is displayed or not.
+  /// The leading items include:
+  ///
+  /// 1. Quote vertical line
+  /// 2. Ordered list number
+  /// 3. Unordered list bullet
+  /// 4. Checklist checkbox
+  /// 5. Code block line number
+  ///
+  /// If the block type doesn't have a leading item, this value is not used.
+  final bool displayLeadingItem;
+
+  /// Indent between the block's leading item and the text.
+  /// This value is also used to determine the amount to shift on indented lines.
+  /// The leading items include:
+  ///
+  /// 1. Quote vertical line
+  /// 2. Ordered list number
+  /// 3. Unordered list bullet
+  /// 4. Checklist checkbox
+  /// 5. Code block line number
+  ///
+  /// If the block type doesn't have a leading item, this value is not used.
+  final double indentWidth;
 
   /// Decoration of a text block.
   ///
@@ -303,6 +334,9 @@ class TextBlockTheme {
     required this.style,
     required this.spacing,
     this.lineSpacing = const VerticalSpacing.zero(),
+    this.contentPadding,
+    this.indentWidth = 0,
+    this.displayLeadingItem = true,
     this.decoration,
   });
 }

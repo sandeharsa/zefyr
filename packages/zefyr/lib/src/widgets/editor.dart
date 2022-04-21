@@ -1347,9 +1347,7 @@ class RawEditorState extends EditorState
             selectionColor: widget.selectionColor,
             enableInteractiveSelection: widget.enableInteractiveSelection,
             hasFocus: _hasFocus,
-            contentPadding: (block == NotusAttribute.block.code)
-                ? const EdgeInsets.all(16.0)
-                : null,
+            contentPadding: _getContentPaddingForBlock(node, _themeData),
             embedBuilder: widget.embedBuilder,
             linkActionPicker: _linkActionPicker,
             onLaunchUrl: widget.onLaunchUrl,
@@ -1384,6 +1382,30 @@ class RawEditorState extends EditorState
     } else {
       return theme.lists.spacing;
     }
+  }
+
+  EdgeInsets? _getContentPaddingForBlock(BlockNode node, ZefyrThemeData theme) {
+    final headingStyle = node.style.get(NotusAttribute.heading);
+    if (headingStyle == NotusAttribute.heading.level1) {
+      return theme.heading1.contentPadding;
+    } else if (headingStyle == NotusAttribute.heading.level2) {
+      return theme.heading2.contentPadding;
+    } else if (headingStyle == NotusAttribute.heading.level3) {
+      return theme.heading3.contentPadding;
+    }
+
+    final blockStyle = node.style.get(NotusAttribute.block);
+    if (blockStyle == NotusAttribute.block.code) {
+      return theme.code.contentPadding;
+    } else if (blockStyle == NotusAttribute.block.quote) {
+      return theme.quote.contentPadding;
+    } else if (blockStyle == NotusAttribute.block.checkList ||
+        blockStyle == NotusAttribute.block.bulletList ||
+        blockStyle == NotusAttribute.block.numberList) {
+      return theme.lists.contentPadding;
+    }
+
+    return theme.paragraph.contentPadding;
   }
 
   // --------------------------- Text Editing Actions ---------------------------

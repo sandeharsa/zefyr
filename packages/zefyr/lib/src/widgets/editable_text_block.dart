@@ -72,7 +72,7 @@ class EditableTextBlock extends StatelessWidget {
       index++;
       final nodeTextDirection = getDirectionOfNode(line as LineNode);
       final listDepth = _getListDepth(line);
-      final listIndent = listDepth.toDouble() * _getIndentWidth();
+      final listIndent = listDepth.toDouble() * _getIndentWidth(context, line);
 
       // Keeping track of lists values.
       // Reset the index if the indent level increased,
@@ -105,7 +105,7 @@ class EditableTextBlock extends StatelessWidget {
             listIndent,
             listDepth,
           ),
-          indentWidth: _getIndentWidth() + listIndent,
+          indentWidth: _getIndentWidth(context, line) + listIndent,
           devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
           body: TextLine(
             node: line,
@@ -130,7 +130,8 @@ class EditableTextBlock extends StatelessWidget {
       int count, double listIndent, int listDepth) {
     final theme = ZefyrTheme.of(context)!;
     final block = node.style.get(NotusAttribute.block);
-    if (block == NotusAttribute.block.numberList) {
+    if (block == NotusAttribute.block.numberList &&
+        theme.lists.displayLeadingItem) {
       return _NumberPoint(
         index: index,
         depth: listDepth,
@@ -138,13 +139,15 @@ class EditableTextBlock extends StatelessWidget {
         width: 32.0,
         padding: listIndent,
       );
-    } else if (block == NotusAttribute.block.bulletList) {
+    } else if (block == NotusAttribute.block.bulletList &&
+        theme.lists.displayLeadingItem) {
       return _BulletPoint(
         style: theme.paragraph.style.copyWith(fontWeight: FontWeight.bold),
         width: 32,
         padding: 2.0 + listIndent,
       );
-    } else if (block == NotusAttribute.block.code) {
+    } else if (block == NotusAttribute.block.code &&
+        theme.code.displayLeadingItem) {
       return _NumberPoint(
         index: index,
         depth: 0,
@@ -154,7 +157,8 @@ class EditableTextBlock extends StatelessWidget {
         padding: 16.0,
         withDot: false,
       );
-    } else if (block == NotusAttribute.block.checkList) {
+    } else if (block == NotusAttribute.block.checkList &&
+        theme.lists.displayLeadingItem) {
       return _CheckboxPoint(
         size: 14,
         padding: listIndent,
@@ -167,15 +171,29 @@ class EditableTextBlock extends StatelessWidget {
     }
   }
 
-  double _getIndentWidth() {
-    final block = node.style.get(NotusAttribute.block);
-    if (block == NotusAttribute.block.quote) {
-      return 16.0;
-    } else if (block == NotusAttribute.block.code) {
-      return 32.0;
-    } else {
-      return 28.0;
+  double _getIndentWidth(BuildContext context, LineNode node) {
+    final theme = ZefyrTheme.of(context)!;
+    final headingStyle = node.style.get(NotusAttribute.heading);
+    if (headingStyle == NotusAttribute.heading.level1) {
+      return theme.heading1.indentWidth;
+    } else if (headingStyle == NotusAttribute.heading.level2) {
+      return theme.heading2.indentWidth;
+    } else if (headingStyle == NotusAttribute.heading.level3) {
+      return theme.heading3.indentWidth;
     }
+
+    final blockStyle = node.style.get(NotusAttribute.block);
+    if (blockStyle == NotusAttribute.block.code) {
+      return theme.code.indentWidth;
+    } else if (blockStyle == NotusAttribute.block.quote) {
+      return theme.quote.indentWidth;
+    } else if (blockStyle == NotusAttribute.block.checkList ||
+        blockStyle == NotusAttribute.block.bulletList ||
+        blockStyle == NotusAttribute.block.numberList) {
+      return theme.lists.indentWidth;
+    }
+
+    return theme.paragraph.indentWidth;
   }
 
   int _getListDepth(LineNode line) {
@@ -184,7 +202,6 @@ class EditableTextBlock extends StatelessWidget {
         block == NotusAttribute.block.bulletList ||
         block == NotusAttribute.block.checkList) {
       return (line.style.get(NotusAttribute.indent(0))?.value as int?) ?? 0;
-      ;
     }
 
     return 0;
@@ -350,91 +367,91 @@ class _NumberPoint extends StatelessWidget {
 // Constants for numbered list
 
 const _alphabets = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-  "aa",
-  "ab",
-  "ac",
-  "ad",
-  "ae",
-  "af",
-  "ag",
-  "ah",
-  "ai",
-  "aj",
-  "ak",
-  "al",
-  "am",
-  "an",
-  "ao",
-  "ap",
-  "aq",
-  "ar",
-  "as",
-  "at",
-  "au",
-  "av",
-  "aw",
-  "ax",
-  "ay",
-  "az",
+  'a',
+  'b',
+  'c',
+  'd',
+  'e',
+  'f',
+  'g',
+  'h',
+  'i',
+  'j',
+  'k',
+  'l',
+  'm',
+  'n',
+  'o',
+  'p',
+  'q',
+  'r',
+  's',
+  't',
+  'u',
+  'v',
+  'w',
+  'x',
+  'y',
+  'z',
+  'aa',
+  'ab',
+  'ac',
+  'ad',
+  'ae',
+  'af',
+  'ag',
+  'ah',
+  'ai',
+  'aj',
+  'ak',
+  'al',
+  'am',
+  'an',
+  'ao',
+  'ap',
+  'aq',
+  'ar',
+  'as',
+  'at',
+  'au',
+  'av',
+  'aw',
+  'ax',
+  'ay',
+  'az',
 ];
 
 const _romanNumerals = [
-  "i",
-  "ii",
-  "iii",
-  "iv",
-  "v",
-  "vi",
-  "vii",
-  "viii",
-  "ix",
-  "x",
-  "xi",
-  "xii",
-  "xiii",
-  "xiv",
-  "xv",
-  "xvi",
-  "xvii",
-  "xviii",
-  "xix",
-  "xx",
-  "xxi",
-  "xxii",
-  "xxiii",
-  "xxiv",
-  "xxv",
-  "xxvi",
-  "xxvii",
-  "xxviii",
-  "xxix",
-  "xxx"
+  'i',
+  'ii',
+  'iii',
+  'iv',
+  'v',
+  'vi',
+  'vii',
+  'viii',
+  'ix',
+  'x',
+  'xi',
+  'xii',
+  'xiii',
+  'xiv',
+  'xv',
+  'xvi',
+  'xvii',
+  'xviii',
+  'xix',
+  'xx',
+  'xxi',
+  'xxii',
+  'xxiii',
+  'xxiv',
+  'xxv',
+  'xxvi',
+  'xxvii',
+  'xxviii',
+  'xxix',
+  'xxx',
 ];
 
 class _BulletPoint extends StatelessWidget {
