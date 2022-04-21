@@ -341,14 +341,20 @@ class _ZefyrEditorState extends State<ZefyrEditor>
       selectionControls: textSelectionControls,
     );
 
-    child = ZefyrShortcuts(
-      child: ZefyrActions(child: child),
-    );
-
-    return _selectionGestureDetectorBuilder.buildGestureDetector(
-      behavior: HitTestBehavior.translucent,
-      child: child,
-    );
+    // Only use the gesture detector when the selection is enabled.
+    // This way, when the selection is disabled, the editor doesn't consume
+    // any touches or long presses.
+    if (selectionEnabled) {
+      child = ZefyrShortcuts(
+        child: ZefyrActions(child: child),
+      );
+      return _selectionGestureDetectorBuilder.buildGestureDetector(
+        behavior: HitTestBehavior.translucent,
+        child: child,
+      );
+    } else {
+      return child;
+    }
   }
 }
 
