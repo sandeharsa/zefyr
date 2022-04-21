@@ -142,7 +142,7 @@ class EditableTextBlock extends StatelessWidget {
       return _BulletPoint(
         style: theme.paragraph.style.copyWith(fontWeight: FontWeight.bold),
         width: 32,
-        padding: 2.0,
+        padding: 2.0 + listIndent,
       );
     } else if (block == NotusAttribute.block.code) {
       return _NumberPoint(
@@ -157,6 +157,7 @@ class EditableTextBlock extends StatelessWidget {
     } else if (block == NotusAttribute.block.checkList) {
       return _CheckboxPoint(
         size: 14,
+        padding: listIndent,
         value: node.style.containsSame(NotusAttribute.checked),
         enabled: !readOnly,
         onChanged: (checked) => _toggle(node, checked),
@@ -333,7 +334,6 @@ class _NumberPoint extends StatelessWidget {
       case 1:
         // Use modulo to cycle around the alphabets,
         // avoiding index out of bounds error.
-
         final indexOfValue = (index - 1) % (_alphabets.length - 1);
         return _alphabets[indexOfValue];
       case 2:
@@ -462,12 +462,14 @@ class _BulletPoint extends StatelessWidget {
 
 class _CheckboxPoint extends StatefulWidget {
   final double size;
+  final double padding;
   final bool value;
   final bool enabled;
   final ValueChanged<bool> onChanged;
   const _CheckboxPoint({
     Key? key,
     required this.size,
+    required this.padding,
     required this.value,
     required this.enabled,
     required this.onChanged,
@@ -493,27 +495,30 @@ class _CheckboxPointState extends State<_CheckboxPoint> {
         : (widget.enabled
             ? theme.colorScheme.onSurface.withOpacity(0.5)
             : theme.colorScheme.onSurface.withOpacity(0.3));
-    return Center(
-      child: SizedBox(
-        width: widget.size,
-        height: widget.size,
-        child: Material(
-          elevation: 0,
-          color: fillColor,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              color: borderColor,
+    return Container(
+      padding: EdgeInsetsDirectional.only(start: widget.padding),
+      child: Center(
+        child: SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: Material(
+            elevation: 0,
+            color: fillColor,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                color: borderColor,
+              ),
+              borderRadius: BorderRadius.circular(2),
             ),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: InkWell(
-            onTap:
-                widget.enabled ? () => widget.onChanged(!widget.value) : null,
-            child: widget.value
-                ? Icon(Icons.check,
-                    size: widget.size, color: theme.colorScheme.onPrimary)
-                : null,
+            child: InkWell(
+              onTap:
+                  widget.enabled ? () => widget.onChanged(!widget.value) : null,
+              child: widget.value
+                  ? Icon(Icons.check,
+                      size: widget.size, color: theme.colorScheme.onPrimary)
+                  : null,
+            ),
           ),
         ),
       ),
