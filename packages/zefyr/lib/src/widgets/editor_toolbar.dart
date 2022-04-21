@@ -592,11 +592,12 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
 class _ZefyrToolbarState extends State<ZefyrToolbar> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      constraints: BoxConstraints.tightFor(height: widget.preferredSize.height),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        constraints:
+            BoxConstraints.tightFor(height: widget.preferredSize.height),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           children: widget.children,
         ),
