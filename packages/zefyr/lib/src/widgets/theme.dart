@@ -92,6 +92,8 @@ class ZefyrThemeData {
   /// Style theme for bullet and number lists.
   final TextBlockTheme lists;
 
+  final ChecklistBoxThemeData checklistBox;
+
   /// Style theme for quote blocks.
   final TextBlockTheme quote;
 
@@ -110,6 +112,7 @@ class ZefyrThemeData {
     required this.heading2,
     required this.heading3,
     required this.lists,
+    required this.checklistBox,
     required this.quote,
     required this.code,
   });
@@ -204,6 +207,14 @@ class ZefyrThemeData {
         lineSpacing: const VerticalSpacing(bottom: 0),
         indentWidth: 28.0,
       ),
+      checklistBox: ChecklistBoxThemeData(
+        size: 16,
+        checkedWidget: Icon(
+          Icons.check,
+          size: 16,
+          color: themeData.colorScheme.onPrimary,
+        ),
+      ),
       quote: TextBlockTheme(
         style: TextStyle(color: baseStyle.color?.withOpacity(0.6)),
         spacing: baseSpacing,
@@ -245,6 +256,7 @@ class ZefyrThemeData {
     TextBlockTheme? heading2,
     TextBlockTheme? heading3,
     TextBlockTheme? lists,
+    ChecklistBoxThemeData? checklistBox,
     TextBlockTheme? quote,
     TextBlockTheme? code,
   }) {
@@ -260,6 +272,7 @@ class ZefyrThemeData {
       heading2: heading2 ?? this.heading2,
       heading3: heading3 ?? this.heading3,
       lists: lists ?? this.lists,
+      checklistBox: checklistBox ?? this.checklistBox,
       quote: quote ?? this.quote,
       code: code ?? this.code,
     );
@@ -278,6 +291,7 @@ class ZefyrThemeData {
       heading2: other.heading2,
       heading3: other.heading3,
       lists: other.lists,
+      checklistBox: other.checklistBox,
       quote: other.quote,
       code: other.code,
     );
@@ -398,4 +412,38 @@ class InlineCodeThemeData {
   @override
   int get hashCode =>
       Object.hash(style, heading1, heading2, heading3, backgroundColor, radius);
+}
+
+/// Theme data for check list box.
+class ChecklistBoxThemeData {
+  /// Box size
+  final double size;
+
+  /// Widget to be used for the 'checked' state
+  final Widget checkedWidget;
+
+  /// Fill color to use in the checked state
+  /// If null, a variation the primary color will be used.
+  final Color? checkedFillColor;
+
+  /// Border color to use in the checked state
+  /// If null, a variation the primary color will be used.
+  final Color? checkedBorderColor;
+
+  /// Fill color to use in the unchecked state
+  /// If null, a variation the primary color will be used.
+  final Color? uncheckedFillColor;
+
+  /// Border color to use in the unchecked state
+  /// If null, a variation the primary color will be used.
+  final Color? uncheckedBorderColor;
+
+  ChecklistBoxThemeData({
+    required this.size,
+    required this.checkedWidget,
+    this.checkedFillColor,
+    this.checkedBorderColor,
+    this.uncheckedFillColor,
+    this.uncheckedBorderColor,
+  });
 }

@@ -160,7 +160,6 @@ class EditableTextBlock extends StatelessWidget {
     } else if (block == NotusAttribute.block.checkList &&
         theme.lists.displayLeadingItem) {
       return _CheckboxPoint(
-        size: 14,
         padding: listIndent,
         value: node.style.containsSame(NotusAttribute.checked),
         enabled: !readOnly,
@@ -478,14 +477,12 @@ class _BulletPoint extends StatelessWidget {
 }
 
 class _CheckboxPoint extends StatefulWidget {
-  final double size;
   final double padding;
   final bool value;
   final bool enabled;
   final ValueChanged<bool> onChanged;
   const _CheckboxPoint({
     Key? key,
-    required this.size,
     required this.padding,
     required this.value,
     required this.enabled,
@@ -500,24 +497,30 @@ class _CheckboxPointState extends State<_CheckboxPoint> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final zefyrTheme = ZefyrTheme.of(context)!;
     var fillColor = widget.value
         ? (widget.enabled
-            ? theme.colorScheme.primary
+            ? zefyrTheme.checklistBox.checkedFillColor ??
+                theme.colorScheme.primary
             : theme.colorScheme.onSurface.withOpacity(0.5))
-        : theme.colorScheme.surface;
+        : zefyrTheme.checklistBox.uncheckedFillColor ??
+            theme.colorScheme.surface;
     var borderColor = widget.value
         ? (widget.enabled
-            ? theme.colorScheme.primary
+            ? zefyrTheme.checklistBox.checkedBorderColor ??
+                theme.colorScheme.primary
             : theme.colorScheme.onSurface.withOpacity(0))
         : (widget.enabled
-            ? theme.colorScheme.onSurface.withOpacity(0.5)
+            ? zefyrTheme.checklistBox.uncheckedBorderColor ??
+                theme.colorScheme.onSurface.withOpacity(0.5)
             : theme.colorScheme.onSurface.withOpacity(0.3));
     return Container(
       padding: EdgeInsetsDirectional.only(start: widget.padding),
-      child: Center(
+      child: Container(
+        alignment: Alignment.centerLeft,
         child: SizedBox(
-          width: widget.size,
-          height: widget.size,
+          width: zefyrTheme.checklistBox.size,
+          height: zefyrTheme.checklistBox.size,
           child: Material(
             elevation: 0,
             color: fillColor,
@@ -531,10 +534,8 @@ class _CheckboxPointState extends State<_CheckboxPoint> {
             child: InkWell(
               onTap:
                   widget.enabled ? () => widget.onChanged(!widget.value) : null,
-              child: widget.value
-                  ? Icon(Icons.check,
-                      size: widget.size, color: theme.colorScheme.onPrimary)
-                  : null,
+              child:
+                  widget.value ? zefyrTheme.checklistBox.checkedWidget : null,
             ),
           ),
         ),
