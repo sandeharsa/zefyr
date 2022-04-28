@@ -66,9 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: ZefyrEditor(
-        controller: controller,
-        focusNode: focusNode,
+      body: Column(
+        children: [
+          Expanded(
+            child: ZefyrEditor(
+              controller: controller,
+              focusNode: focusNode,
+            ),
+          ),
+          ZefyrToolbar.basic(controller: controller)
+        ],
       ),
     );
   }
