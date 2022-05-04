@@ -808,6 +808,11 @@ class RawEditorState extends EditorState
       return false;
     }
 
+    // Attempt to get the selection overlay ready to display the toolbar
+    if (selectionOverlay == null) {
+      _updateOrDisposeSelectionOverlayIfNeeded();
+    }
+
     if (_selectionOverlay == null || _selectionOverlay!.toolbarIsVisible) {
       return false;
     }
