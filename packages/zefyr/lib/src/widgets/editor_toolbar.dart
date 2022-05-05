@@ -310,6 +310,10 @@ class _SelectHeadingStyleButtonState extends State<SelectHeadingStyleButton> {
     setState(() {
       _value = _selectionStyle.get(NotusAttribute.heading) ??
           NotusAttribute.heading.unset;
+      final blockStyle = _selectionStyle.get(NotusAttribute.block);
+      if (blockStyle == NotusAttribute.block.small) {
+        _value = NotusAttribute.block.small;
+      }
     });
   }
 
@@ -322,6 +326,10 @@ class _SelectHeadingStyleButtonState extends State<SelectHeadingStyleButton> {
     super.initState();
     _value = _selectionStyle.get(NotusAttribute.heading) ??
         NotusAttribute.heading.unset;
+    final blockStyle = _selectionStyle.get(NotusAttribute.block);
+    if (blockStyle == NotusAttribute.block.small) {
+      _value = NotusAttribute.block.small;
+    }
     widget.controller.addListener(_didChangeEditingValue);
   }
 
@@ -333,6 +341,10 @@ class _SelectHeadingStyleButtonState extends State<SelectHeadingStyleButton> {
       widget.controller.addListener(_didChangeEditingValue);
       _value = _selectionStyle.get(NotusAttribute.heading) ??
           NotusAttribute.heading.unset;
+      final blockStyle = _selectionStyle.get(NotusAttribute.block);
+      if (blockStyle == NotusAttribute.block.small) {
+        _value = NotusAttribute.block.small;
+      }
     }
   }
 
@@ -357,6 +369,7 @@ Widget _selectHeadingStyleButtonBuilder(BuildContext context,
     NotusAttribute.heading.level1: 'Heading 1',
     NotusAttribute.heading.level2: 'Heading 2',
     NotusAttribute.heading.level3: 'Heading 3',
+    NotusAttribute.block.small: 'Small text',
   };
 
   return ZDropdownButton<NotusAttribute?>(
@@ -385,10 +398,15 @@ Widget _selectHeadingStyleButtonBuilder(BuildContext context,
         height: 32,
         child: Text(valueToText[NotusAttribute.heading.level3]!, style: style),
       ),
+      PopupMenuItem(
+        value: NotusAttribute.block.small,
+        height: 32,
+        child: Text(valueToText[NotusAttribute.block.small]!, style: style),
+      ),
     ],
     onSelected: onSelected,
     child: Text(
-      valueToText[value as NotusAttribute<int>]!,
+      valueToText[value as NotusAttribute<dynamic>]!,
       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
     ),
   );

@@ -186,6 +186,8 @@ class EditableTextBlock extends StatelessWidget {
       return theme.code.indentWidth;
     } else if (blockStyle == NotusAttribute.block.quote) {
       return theme.quote.indentWidth;
+    } else if (blockStyle == NotusAttribute.block.small) {
+      return theme.small.indentWidth;
     } else if (blockStyle == NotusAttribute.block.checkList ||
         blockStyle == NotusAttribute.block.bulletList ||
         blockStyle == NotusAttribute.block.numberList) {
@@ -227,13 +229,15 @@ class EditableTextBlock extends StatelessWidget {
       VerticalSpacing? lineSpacing;
       if (block == NotusAttribute.block.quote) {
         lineSpacing = theme.quote.lineSpacing;
+      } else if (block == NotusAttribute.block.small) {
+        lineSpacing = theme.small.lineSpacing;
       } else if (block == NotusAttribute.block.numberList ||
           block == NotusAttribute.block.bulletList ||
           block == NotusAttribute.block.checkList) {
         lineSpacing = theme.lists.lineSpacing;
       } else if (block == NotusAttribute.block.code ||
           block == NotusAttribute.block.code) {
-        lineSpacing = theme.lists.lineSpacing;
+        lineSpacing = theme.code.lineSpacing;
       }
       top = lineSpacing?.top;
       bottom = lineSpacing?.bottom;

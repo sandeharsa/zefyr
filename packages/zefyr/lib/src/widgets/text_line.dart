@@ -263,8 +263,11 @@ class _TextLineState extends State<TextLine> {
       textStyle = textStyle.merge(theme.quote.style);
     } else if (block == NotusAttribute.block.code) {
       textStyle = textStyle.merge(theme.code.style);
-    } else if (block != null) {
-      // lists
+    } else if (block == NotusAttribute.block.small) {
+      textStyle = textStyle.merge(theme.small.style);
+    } else if (block == NotusAttribute.block.numberList ||
+        block == NotusAttribute.block.bulletList ||
+        block == NotusAttribute.block.checkList) {
       textStyle = textStyle.merge(theme.lists.style);
     }
 

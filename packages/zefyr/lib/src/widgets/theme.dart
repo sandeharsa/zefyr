@@ -89,6 +89,9 @@ class ZefyrThemeData {
   /// Style theme for level 3 headings.
   final TextBlockTheme heading3;
 
+  /// Style theme for small texts.
+  final TextBlockTheme small;
+
   /// Style theme for bullet and number lists.
   final TextBlockTheme lists;
 
@@ -111,6 +114,7 @@ class ZefyrThemeData {
     required this.heading1,
     required this.heading2,
     required this.heading3,
+    required this.small,
     required this.lists,
     required this.checklistBox,
     required this.quote,
@@ -201,6 +205,11 @@ class ZefyrThemeData {
         ),
         spacing: const VerticalSpacing(bottom: 0.0, top: 8.0),
       ),
+      small: TextBlockTheme(
+        style: baseStyle.copyWith(fontSize: (baseStyle.fontSize ?? 16) - 4),
+        spacing: baseSpacing,
+        // lineSpacing is not relevant for paragraphs since they consist of one line
+      ),
       lists: TextBlockTheme(
         style: baseStyle,
         spacing: baseSpacing,
@@ -255,6 +264,7 @@ class ZefyrThemeData {
     TextBlockTheme? heading1,
     TextBlockTheme? heading2,
     TextBlockTheme? heading3,
+    TextBlockTheme? small,
     TextBlockTheme? lists,
     ChecklistBoxThemeData? checklistBox,
     TextBlockTheme? quote,
@@ -271,6 +281,7 @@ class ZefyrThemeData {
       heading1: heading1 ?? this.heading1,
       heading2: heading2 ?? this.heading2,
       heading3: heading3 ?? this.heading3,
+      small: small ?? this.small,
       lists: lists ?? this.lists,
       checklistBox: checklistBox ?? this.checklistBox,
       quote: quote ?? this.quote,
@@ -290,6 +301,7 @@ class ZefyrThemeData {
       heading1: other.heading1,
       heading2: other.heading2,
       heading3: other.heading3,
+      small: other.small,
       lists: other.lists,
       checklistBox: other.checklistBox,
       quote: other.quote,
