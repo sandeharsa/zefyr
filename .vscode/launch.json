@@ -5,26 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "notus",
-            "cwd": "packages/notus",
+            "name": "zefyr - example",
+            "cwd": "packages/zefyr/example",
+            "program": "lib/main.dart",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "zefyr",
-            "cwd": "packages/zefyr",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "zefyr (profile mode)",
-            "cwd": "packages/zefyr",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "zefyr (release mode)",
+            "name": "zefyr - example (release mode)",
             "cwd": "packages/zefyr",
             "request": "launch",
             "type": "dart",
