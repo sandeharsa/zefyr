@@ -152,6 +152,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Alias for [NotusAttribute.block.quote].
   static NotusAttribute<String> get bq => block.quote;
 
+  /// Alias for [NotusAttribute.block.small]
+  static NotusAttribute<String> get small => block.small;
+
   /// Alias for [NotusAttribute.block.code].
   static NotusAttribute<String> get code => block.code;
 
@@ -467,6 +470,10 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
   /// Formats a block of lines as a quote.
   NotusAttribute<String> get quote =>
       NotusAttribute<String>._(key, scope, 'quote');
+
+  /// Formats a block of lines as smaller text
+  NotusAttribute<String> get small =>
+      NotusAttribute<String>._(key, scope, 'small');
 }
 
 class DirectionAttributeBuilder extends NotusAttributeBuilder<String> {
