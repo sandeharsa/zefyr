@@ -114,13 +114,17 @@ class LineNode extends ContainerNode<LeafNode>
     var result = NotusStyle();
     final excluded = <NotusAttribute>{};
 
-    void _handle(NotusStyle style) {
-      if (result.isEmpty) {
-        excluded.addAll(style.values);
-      } else {
-        for (var attr in result.values) {
-          if (!style.contains(attr)) {
-            excluded.add(attr);
+    void _handle(NotusStyle style, LeafNode? node) {
+      // If node is null, the line was empty.
+      // In that case, do not go through the exclusion algorithm.
+      if (node != null) {
+        if (result.isEmpty) {
+          excluded.addAll(style.values);
+        } else {
+          for (var attr in result.values) {
+            if (!style.contains(attr)) {
+              excluded.add(attr);
+            }
           }
         }
       }
@@ -136,7 +140,7 @@ class LineNode extends ContainerNode<LeafNode>
       var pos = node.length - data.offset;
       while (!node!.isLast && pos < local) {
         node = node.next as LeafNode;
-        _handle(node.style);
+        _handle(node.style, node);
         pos += node.length;
       }
     }
@@ -150,7 +154,7 @@ class LineNode extends ContainerNode<LeafNode>
     final remaining = length - local;
     if (remaining > 0) {
       final rest = nextLine!.collectStyle(0, remaining);
-      _handle(rest);
+      _handle(rest, node);
     }
 
     return result;
